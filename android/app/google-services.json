@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "970895374047",
+    "project_id": "kantin-2c04a",
+    "storage_bucket": "kantin-2c04a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:970895374047:android:c9a9a028cac360eb2b1b6a",
+        "android_client_info": {
+          "package_name": "com.example.wowow"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "970895374047-8j9q60fli9ojjbqarqjda1drugkfqukq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAgO4AgWBRBGak1zQZTzvReepD2TVBXuHA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "970895374047-8j9q60fli9ojjbqarqjda1drugkfqukq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
