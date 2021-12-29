@@ -2,8 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:wowow/const/custom_color.dart';
 import 'package:wowow/ui/product_page.dart';
-
-import 'widget/bottom_bar.dart';
+import 'package:wowow/widget/bottom_bar.dart';
 
 void main() {
   runApp(const MyApp());
@@ -51,18 +50,19 @@ class _MyHomePageState extends State<MyHomePage> {
             appBar: AppBar(
               backgroundColor: Colors.white,
               elevation: 0.0,
-              centerTitle: true,
-              leading: IconButton(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.arrow_back,
-                  color: Color(0xFF545D68),
-                ),
-              ),
+              // centerTitle: true,
+              // leading: IconButton(
+              //   onPressed: () {},
+              //   icon: const Icon(
+              //     Icons.arrow_back,
+              //     color: Color(0xFF545D68),
+              //   ),
+              // ),
               title: const Text(
-                'New Order',
+                'GAK TAU',
                 style: TextStyle(
                   fontFamily: 'Varela',
+                  fontWeight: FontWeight.bold,
                   fontSize: 20,
                   color: Color(0xFF545D68),
                 ),
@@ -77,24 +77,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ],
             ),
-            body: ListView(
-              padding: const EdgeInsets.only(left: 20.0),
-              children: [
-                SizedBox(
-                  height: 15.0,
-                ),
-                Text(
-                  'Pilih Barang',
-                  style: TextStyle(fontFamily: 'Varela', fontSize: 30, fontWeight: FontWeight.bold),
-                ),
-                Container(
-                  height: MediaQuery.of(context).size.height - 30,
-                  width: double.infinity,
-                  child: ProductPage(),
-                )
-              ],
-            ),
+            body: ProductPage(),
             floatingActionButton: FloatingActionButton(
+              heroTag: 'newSales',
               onPressed: () {},
               backgroundColor: Color(0xFFF17532),
               child: Icon(Icons.fastfood),

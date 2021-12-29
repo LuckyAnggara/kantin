@@ -1,33 +1,41 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+final CollectionReference _barangCollection = _firestore.collection('barang');
+
 class Product {
-  final String? name, img, desc;
+  final String? name, img;
   final double? price;
   final bool? isFavorite;
 
-  Product(
-      {required this.name,
-      required this.img,
-      required this.desc,
-      required this.price,
-      required this.isFavorite});
-}
+  Product({required this.name, required this.img, required this.price, required this.isFavorite});
 
-List<Product> listProduct = [
-  Product(
-      name: 'Teh Kotak',
-      img: 'assets/images/teh_kotak.png',
-      desc: 'Teh Kotak Rasa Istimewa',
-      price: 5000,
-      isFavorite: true),
-  Product(
-      name: 'Beng Beng',
-      img: 'assets/images/bengbeng.png',
-      desc: 'Beng Beng Rasa Istimewa',
-      price: 2500,
-      isFavorite: false),
-  Product(
-      name: 'Oreo',
-      img: 'assets/images/oreo.png',
-      desc: 'Oreo Rasa Istimewa',
-      price: 2500,
-      isFavorite: false),
-];
+  static Future<void> addItem({
+    required String name,
+    required double price,
+  }) async {
+    DocumentReference documentReferencer = _barangCollection.doc();
+
+    Map<String, dynamic> data = <String, dynamic>{
+      "nama": name,
+      "harga": price,
+      "isFavorite": false,
+    };
+
+    await documentReferencer
+        .set(data)
+        .whenComplete(() => print("Notes item added to the database"))
+        .catchError((e) => print(e));
+  }
+
+  static Future<void> deleteItem({
+    required String docId,
+  }) async {
+    DocumentReference documentReferencer = _firestore.collection('barang').doc(docId);
+
+    await documentReferencer
+        .delete()
+        .whenComplete(() => print('Note item deleted from the database'))
+        .catchError((e) => print(e));
+  }
+}

@@ -7,25 +7,37 @@ class Database {
   static String? userUid;
 
   static Future<void> addItem({
-    required String nama,
-    required double harga,
+    required String name,
+    required double price,
   }) async {
-    DocumentReference documentReference = _barangCollection.doc().collection('items').doc();
+    DocumentReference documentReferencer = _barangCollection.doc();
 
     Map<String, dynamic> data = <String, dynamic>{
-      "nama": nama,
-      "harga": harga,
+      "nama": name,
+      "harga": price,
+      "isFavorite": false,
     };
 
-    await documentReference
+    await documentReferencer
         .set(data)
-        .whenComplete(() => print('Data berhasil di tambah'))
+        .whenComplete(() => print("Notes item added to the database"))
         .catchError((e) => print(e));
   }
 
   static Stream<QuerySnapshot> readItems() {
     CollectionReference barangCollection = _firestore.collection('barang');
     return barangCollection.snapshots();
+  }
+
+  static Future<void> deleteItem({
+    required String docId,
+  }) async {
+    DocumentReference documentReferencer = _firestore.collection('barang').doc(docId);
+
+    await documentReferencer
+        .delete()
+        .whenComplete(() => print('Note item deleted from the database'))
+        .catchError((e) => print(e));
   }
 }
 
