@@ -1,5 +1,6 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:wowow/const/custom_color.dart';
 import 'package:wowow/models/database.dart';
@@ -81,6 +82,8 @@ class ProductPage extends StatelessWidget {
   }
 
   Widget _buildCard(QueryDocumentSnapshot product, ctx) {
+    FirebaseStorage storage = FirebaseStorage.instance;
+
     return Card(
       elevation: 5.0,
       child: InkWell(
@@ -93,6 +96,8 @@ class ProductPage extends StatelessWidget {
               await Database.deleteItem(
                 docId: product.id,
               );
+              await storage.refFromURL(product.get('gambar')).delete();
+
               Navigator.of(context).pop();
               Flushbar(
                 leftBarIndicatorColor: Colors.blue[300],

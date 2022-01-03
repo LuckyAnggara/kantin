@@ -2,71 +2,100 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:wowow/const/custom_color.dart';
 import 'package:wowow/models/database.dart';
+import 'package:wowow/models/penjualan.dart';
 
-class SalesPage extends StatelessWidget {
+class SalesPage extends StatefulWidget {
+  const SalesPage({Key? key}) : super(key: key);
+
+  @override
+  State<SalesPage> createState() => _SalesPageState();
+}
+
+class _SalesPageState extends State<SalesPage> {
+  final Keranjang keranjang = Keranjang();
+
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.only(left: 20.0),
-      children: [
-        SizedBox(
-          height: 15.0,
+    return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {},
+        backgroundColor: Color(0xFFF17532),
+        label: Row(
+          children: [
+            Icon(Icons.shopping_basket_outlined),
+            SizedBox(
+              width: 10,
+            ),
+            Text('Keranjang')
+          ],
         ),
-        Text(
-          'Pilih Barang',
-          style: TextStyle(fontFamily: 'Varela', fontSize: 30, fontWeight: FontWeight.bold),
-        ),
-        Container(
-          height: MediaQuery.of(context).size.height - 30,
-          width: double.infinity,
-          child: Scaffold(
-              backgroundColor: Color(0xFFFCFAF8),
-              body: ListView(
-                children: [
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                  StreamBuilder<QuerySnapshot>(
-                      stream: Database.readItems(),
-                      builder: (ctx, snapshot) {
-                        if (snapshot.hasError) {
-                          return Text('Ooppss');
-                        } else if (snapshot.hasData || snapshot.data != null) {
-                          return Container(
-                              padding: EdgeInsets.only(right: 15.0),
-                              width: MediaQuery.of(context).size.width - 30.0,
-                              height: MediaQuery.of(context).size.height - 50.0,
-                              child: GridView.builder(
-                                  physics: BouncingScrollPhysics(),
-                                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2,
-                                    crossAxisSpacing: 10.0,
-                                    mainAxisSpacing: 15.0,
-                                    childAspectRatio: 0.8,
-                                  ),
-                                  itemCount: snapshot.data!.docs.length,
-                                  itemBuilder: (BuildContext context, index) {
-                                    var detailBarang = snapshot.data!.docs[index];
+      ),
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.only(left: 20.0),
+          children: [
+            SizedBox(
+              height: 15.0,
+            ),
+            Text(
+              'Pilih Barang',
+              style: TextStyle(fontFamily: 'Varela', fontSize: 30, fontWeight: FontWeight.bold),
+            ),
+            Container(
+              height: MediaQuery.of(context).size.height - 30,
+              width: double.infinity,
+              child: Scaffold(
+                  backgroundColor: Color(0xFFFCFAF8),
+                  body: ListView(
+                    children: [
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                      StreamBuilder<QuerySnapshot>(
+                          stream: Database.readItems(),
+                          builder: (ctx, snapshot) {
+                            if (snapshot.hasError) {
+                              return Text('Ooppss');
+                            } else if (snapshot.hasData || snapshot.data != null) {
+                              return Container(
+                                  padding: EdgeInsets.only(right: 15.0),
+                                  width: MediaQuery.of(context).size.width - 30.0,
+                                  height: MediaQuery.of(context).size.height - 50.0,
+                                  child: GridView.builder(
+                                      physics: BouncingScrollPhysics(),
+                                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 2,
+                                        crossAxisSpacing: 10.0,
+                                        mainAxisSpacing: 15.0,
+                                        childAspectRatio: 0.8,
+                                      ),
+                                      itemCount: snapshot.data!.docs.length,
+                                      itemBuilder: (BuildContext context, index) {
+                                        var detailBarang = snapshot.data!.docs[index];
 
-                                    return _buildProduct(detailBarang);
-                                  }));
-                        }
-                        return Center(
-                          child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              CustomColors.firebaseOrange,
-                            ),
-                          ),
-                        );
-                      }),
-                ],
-              )),
-        )
-      ],
+                                        return _buildProduct(detailBarang, keranjang);
+                                      }));
+                            }
+                            return Center(
+                              child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  CustomColors.firebaseOrange,
+                                ),
+                              ),
+                            );
+                          }),
+                    ],
+                  )),
+            )
+          ],
+        ),
+      ),
     );
   }
 
-  Widget _buildProduct(QueryDocumentSnapshot product) {
+  Widget _buildProduct(QueryDocumentSnapshot product, Keranjang keranjang) {
+    var data = keranjang.getList?.where((row) => (row.idBarang!.contains(product.id)));
     return Padding(
       padding: EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
       child: InkWell(
@@ -133,27 +162,82 @@ class SalesPage extends StatelessWidget {
                   height: 1,
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.only(left: 5, right: 5),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Icon(
-                      Icons.shopping_basket,
-                      color: Color(0xFFD17E59),
-                      size: 14,
-                    ),
-                    Text(
-                      'Tambah ke Keranjang',
-                      style: TextStyle(
-                        color: Color(0xFFD17E50),
-                        fontFamily: 'Varela',
-                        fontSize: 12.0,
+              data!.isNotEmpty
+                  ? Container(
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 5, right: 5),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                keranjang.removeItem(product.id);
+                                setState(() {});
+                              },
+                              child: Icon(
+                                Icons.remove,
+                                color: Color(0xFFD17E59),
+                                size: 14,
+                              ),
+                            ),
+                            Text(
+                              '${data.length}',
+                              style: TextStyle(
+                                color: Color(0xFFD17E50),
+                                fontFamily: 'Varela',
+                                fontSize: 12.0,
+                              ),
+                            ),
+                            InkWell(
+                              onTap: () {
+                                Penjualan penjualan = Penjualan(
+                                  idBarang: product.id,
+                                  hargaJual: product.get('harga'),
+                                );
+                                keranjang.addItem(penjualan);
+                                setState(() {});
+                              },
+                              child: Icon(
+                                Icons.add,
+                                color: Color(0xFFD17E59),
+                                size: 14,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     )
-                  ],
-                ),
-              )
+                  : InkWell(
+                      onTap: () {
+                        Penjualan penjualan = Penjualan(
+                          idBarang: product.id,
+                          hargaJual: product.get('harga'),
+                        );
+                        keranjang.addItem(penjualan);
+                        setState(() {});
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 5, right: 5),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Icon(
+                              Icons.shopping_basket,
+                              color: Color(0xFFD17E59),
+                              size: 14,
+                            ),
+                            Text(
+                              'Tambah ke Keranjang',
+                              style: TextStyle(
+                                color: Color(0xFFD17E50),
+                                fontFamily: 'Varela',
+                                fontSize: 12.0,
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    )
             ],
           ),
         ),
