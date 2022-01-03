@@ -35,7 +35,10 @@ class ProductPage extends StatelessWidget {
               alignment: Alignment.centerLeft,
               child: Text(
                 'Daftar Produk',
-                style: TextStyle(fontFamily: 'Varela', fontSize: 24, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontFamily: 'Varela',
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold),
               ),
             ),
             SizedBox(
@@ -107,7 +110,8 @@ class ProductPage extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(color: Colors.white60),
           child: ListTile(
-            contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+            contentPadding:
+                EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
             leading: Container(
               padding: EdgeInsets.only(right: 12.0),
               decoration: new BoxDecoration(
@@ -122,7 +126,8 @@ class ProductPage extends StatelessWidget {
             ),
             title: Text(
               '${product.get('nama')}',
-              style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
             ),
             // subtitle: Text("Intermediate", style: TextStyle(color: Colors.white)),
           ),
