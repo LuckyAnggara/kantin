@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:wowow/const/custom_color.dart';
 import 'package:wowow/ui/product_page.dart';
+import 'package:wowow/ui/sales_page.dart';
 import 'package:wowow/widget/bottom_bar.dart';
 
 void main() {
@@ -80,7 +81,14 @@ class _MyHomePageState extends State<MyHomePage> {
             body: ProductPage(),
             floatingActionButton: FloatingActionButton(
               heroTag: 'newSales',
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SalesPage(),
+                  ),
+                );
+              },
               backgroundColor: Color(0xFFF17532),
               child: Icon(Icons.fastfood),
             ),

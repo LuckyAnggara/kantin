@@ -12,6 +12,7 @@ class Product {
 
   static Future<void> addItem({
     required String name,
+    img,
     required double price,
   }) async {
     DocumentReference documentReferencer = _barangCollection.doc();
@@ -19,13 +20,11 @@ class Product {
     Map<String, dynamic> data = <String, dynamic>{
       "nama": name,
       "harga": price,
+      "gambar": img,
       "isFavorite": false,
     };
 
-    await documentReferencer
-        .set(data)
-        .whenComplete(() => print("Notes item added to the database"))
-        .catchError((e) => print(e));
+    await documentReferencer.set(data).catchError((e) => print(e));
   }
 
   static Future<void> deleteItem({

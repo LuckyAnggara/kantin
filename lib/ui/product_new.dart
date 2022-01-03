@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:another_flushbar/flushbar.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:wowow/const/custom_color.dart';
@@ -49,6 +51,8 @@ class AddFormProduct extends StatefulWidget {
 }
 
 class _AddFormProductState extends State<AddFormProduct> {
+  FirebaseStorage storage = FirebaseStorage.instance;
+
   final _addProductFormKey = GlobalKey<FormState>();
   bool _isProcessing = false;
 
@@ -56,6 +60,7 @@ class _AddFormProductState extends State<AddFormProduct> {
   TextEditingController priceController = TextEditingController();
   var _image;
   var imagePicker;
+  late XFile image;
 
   @override
   void initState() {
@@ -111,7 +116,7 @@ class _AddFormProductState extends State<AddFormProduct> {
   }
 
   void openGallery() async {
-    XFile image = await imagePicker.pickImage(
+    image = await imagePicker.pickImage(
         source: ImageSource.gallery, imageQuality: 50, preferredCameraDevice: CameraDevice.front);
     setState(() {
       _image = File(image.path);
@@ -126,6 +131,20 @@ class _AddFormProductState extends State<AddFormProduct> {
     } else {
       return Image.file(_image, width: 350, height: 350);
     }
+  }
+
+  Future<String?> _upload(XFile? file) async {
+    late Reference ref;
+    late String url;
+    if (file == null) {
+      return null;
+    }
+    try {
+      ref = storage.ref('images').child(file.name);
+      await ref.putFile(File(file.path), SettableMetadata());
+    } on FirebaseException catch (error) {}
+
+    return await ref.getDownloadURL();
   }
 
   @override
@@ -244,11 +263,15 @@ class _AddFormProductState extends State<AddFormProduct> {
                           setState(() {
                             _isProcessing = true;
                           });
+                          await _upload(image).then((value) {
+                            Product.addItem(
+                              name: nameController.text,
+                              price: double.parse(priceController.text),
+                              img: value,
+                            );
+                          });
 
-                          await Product.addItem(
-                            name: nameController.text,
-                            price: double.parse(priceController.text),
-                          );
+                          // img: 'http://clipart-library.com/img/1657818.png');
 
                           setState(() {
                             _isProcessing = false;
@@ -275,5 +298,9 @@ class _AddFormProductState extends State<AddFormProduct> {
         ),
       ),
     );
+  }
+
+  Future<String> _getDownloadLink(XFile File) async {
+    return await storage.ref('images').child(image.name).getDownloadURL() as String;
   }
 }
