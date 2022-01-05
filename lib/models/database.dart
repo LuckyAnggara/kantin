@@ -18,10 +18,7 @@ class Database {
       "isFavorite": false,
     };
 
-    await documentReferencer
-        .set(data)
-        .whenComplete(() => print("Notes item added to the database"))
-        .catchError((e) => print(e));
+    await documentReferencer.set(data);
   }
 
   static Stream<QuerySnapshot> readItems() {
@@ -32,7 +29,8 @@ class Database {
   static Future<void> deleteItem({
     required String docId,
   }) async {
-    DocumentReference documentReferencer = _firestore.collection('barang').doc(docId);
+    DocumentReference documentReferencer =
+        _firestore.collection('barang').doc(docId);
 
     await documentReferencer
         .delete()
