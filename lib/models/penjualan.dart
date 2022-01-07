@@ -40,15 +40,17 @@ class Keranjang {
         _firestore.collection('barang').get().then((querySnapshot) {
       for (var result in querySnapshot.docs) {
         int jumlah = _keranjang!.where((x) => x.idBarang == result.id).length;
-        double total = result.get('harga') * jumlah;
-        _total.add(
-          SiapJual(
-            id: result.id,
-            nama: result.get('nama'),
-            jumlah: jumlah,
-            total: total,
-          ),
-        );
+        if (jumlah > 0) {
+          double total = result.get('harga') * jumlah;
+          _total.add(
+            SiapJual(
+              id: result.id,
+              nama: result.get('nama'),
+              jumlah: jumlah,
+              total: total,
+            ),
+          );
+        }
       }
 
       return _total.toList();
